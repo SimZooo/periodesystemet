@@ -10,39 +10,19 @@
      * @param {{ el: number; mpn: number; navn: string }} element
      */
     function calculateEl(element) {
-        let val = 0;
-        let red = 0;
-        let green = 0;
-        let blue = 0;
+        let saturation = 0;
         if (show_el) {
-            val = Math.max(0, Math.min(element.el, 3.98));
-
-            const intensity = 200 - Math.round((val / 3.98) * 150);
-            red = Math.round(intensity * 0.9);
-            green = Math.round(intensity * 0.9);
-            blue = Math.round(intensity * 1.2);
-
-
+            saturation = 100 - (element.el / 5) * 100;
         } else if (show_mpn) {
-            val = (element.mpn * 100 % 10) / 10;
-            const intensity = 255 - Math.round((val - 0.9) * 150);
-
-            // Beregn fargekomponentene
-            red = Math.round(intensity * 0.8); 
-            green = Math.round(intensity * 0.9);
-            blue = Math.round(intensity * 1.1);
-
-            // Clamp alle fargekomponenter mellom 0 og 255
-            red = Math.min(Math.max(red, 0), 255);
-            green = Math.min(Math.max(green, 0), 255);
-            blue = Math.min(Math.max(blue, 0), 255);
+            let mpn = (element.mpn - 0.983) * 100 * 25;
+            saturation = 100 - mpn;
         }
 
-        if (val == 0) {
-            return "255, 255, 255";
+        if (saturation == 0) {
+            return "100%";
         }
 
-        return red + "," + green + "," + blue
+        return saturation
     }
 
     /**
@@ -56,7 +36,7 @@
      * @param {any} el
      */
     function calculateElementBg(el) {
-        return "background-color: rgb(" + calculateEl(el) + ")"
+        return "background-color: hsl(240, 23%, " + calculateEl(el) + "%)"
     }
 
     /**
@@ -86,8 +66,9 @@
 }
 
 .element {
-    width: 5.556rem;
-    height: 5.556rem;
+    padding: 0;
+    box-sizing:border-box;
+    aspect-ratio: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -96,13 +77,14 @@
     transition: 0.5s;
     background-color: white;
     font-weight: bold;
-    font-size: x-large;
+    font-size: large;
 }
 
 .element-large {
     width: 7em;
     height: 7em;
     display: flex;
+    place-self: center;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -112,11 +94,6 @@
     font-weight: bold;
     font-size: x-large;
     grid-column: 2 / 2;
-}
-
-.element > p {
-    padding: 0;
-    margin: 0;
 }
 
 .element:hover {
@@ -129,13 +106,6 @@
     opacity: 1;
 }
 
-main {
-    display: grid;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
 :global(body) {
     background-color: #272727;
     color: #272727;
@@ -143,27 +113,59 @@ main {
     padding: 0;
 }
 
+:global(body::-webkit-scrollbar) {
+    display: none;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
 #info {
     display: grid;
     place-self: center;
+    align-items: center;
     font-weight: 600;
     width: 100%;
-    margin: 0;
-    padding: 0;
     height: 200px;
     background-color: #006AE5;
     grid-template: 1fr / repeat(5, 1fr) ;
+    margin: 2% 0 2% 0;
+}
+
+#element-info {
+    width: 100%;
+    height: 100%;
+    color: white;
+    display: grid;
+    grid-template: 1fr 2fr 1fr / 1fr;
+}
+
+#element-info div, h2 {
+    display: flex;
+    flex-direction: column;
+}
+
+#element-info h2 {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    text-decoration-line: underline;
+    text-decoration-color: white;
 }
 
 .periodesystem {
     display: grid;
     place-self: center;
     grid-template: repeat(7, 1fr) / repeat(18, 1fr);
-    gap: 5px;
+    margin: 2% 0 2% 0;
+    gap: 0;
 }
 
 button {
-    border: solid 2px #272727;
+    border: solid #272727;
     padding: 10px;
     box-shadow: none;
     background-color: white;
@@ -173,10 +175,10 @@ button {
 
 #buttons {
     place-self: center;
+    margin-bottom: 2%;
 }
 </style>
 
-<main>
 <div class="periodesystem">
     {#each data.elements as element}
     {#each {length: element.element.gruppe - last_group - 1}}
@@ -196,13 +198,24 @@ button {
     <div class="element-large">
         <p>{current_element.num}</p>
         <p>{current_element.symbol} </p>
+        <p>{current_element.navn}</p>
     </div>
-    <div>
-        <h3>{current_element.navn}</h3>
+    <div id="element-info">
+        <h2>{current_element.navn}</h2>
+        <div>
+            <h3>
+                Atomnummer: {current_element.num}
+            </h3>
+            <h3>
+                Elektronegativitet: {current_element.el}
+            </h3>
+            <h3>
+                Masse-per-nukleon: {current_element.mpn}
+            </h3>
+        </div>
     </div>
 </div>
 <div id="buttons">
     <button onclick={() => {show_el = !show_el; show_mpn = false;}}> Elektronegativitet </button>
     <button onclick={() => {show_mpn = !show_mpn; show_el = false;}}> Masse-per-nukleon </button>
 </div>
-</main>

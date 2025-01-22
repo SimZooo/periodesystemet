@@ -85,7 +85,6 @@ export const data = [
   { navn: "Copernicium", symbol: "Cn", periode: 7, gruppe: 12, el: 0, num: 112, mpn: 1.000 },
   { navn: "Nihonium", symbol: "Nh", periode: 7, gruppe: 13, el: 0, num: 113, mpn: 1.000 },
   { navn: "Flerovium", symbol: "Fl", periode: 7, gruppe: 14, el: 0, num: 114, mpn: 1.000 },
-  { navn: "Flerovium", symbol: "Fl", periode: 7, gruppe: 14, el: 0, num: 114, mpn: 1.000 },
   { navn: "Moscovium", symbol: "Mc", periode: 7, gruppe: 15, el: 0, num: 115, mpn: 1.000 },
   { navn: "Livermorium", symbol: "Lv", periode: 7, gruppe: 16, el: 0, num: 116, mpn: 1.000 },
   { navn: "Tenness", symbol: "Ts", periode: 7, gruppe: 17, el: 0, num: 117, mpn: 1.000 },
